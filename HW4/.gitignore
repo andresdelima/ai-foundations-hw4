@@ -1,0 +1,32 @@
+# ---- Secrets: never commit the real .env (only .env.example) ----
+.env
+.env.*
+!.env.example
+
+# ---- Course data: database and product images stay local ----
+data/
+*.db
+*.sqlite
+*.sqlite3
+**/products/*.jpg
+
+# ---- Python ----
+.venv
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# ---- Node / Vite ----
+node_modules/
+dist/
+
+# ---- Audit trail write helpers (the trail itself, output/audit_trail.json, is committed) ----
+*.lock
+*.json.tmp
+
+# ---- OS / editor ----
+.DS_Store
+.vscode/
+.idea/
+*.zip

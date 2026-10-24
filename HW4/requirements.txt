@@ -1,0 +1,7 @@
+# Backend dependencies (Python 3.12). Install from the HW4 folder: pip install -r requirements.txt
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-dotenv>=1.0.1
+pydantic>=2.7
+pydantic-ai-slim[openai]>=1.0.0
+httpx2>=0.1  # FastAPI TestClient (only for local checks)

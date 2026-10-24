@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Campus Customs: App Check (HW4 Problem 11)</title>
+<style>
+  :root { --navy:#00356b; --deep:#0a1f3d; --cream:#f6f1e7; --paper:#fbf8f2; --ink:#1b2330; --muted:#5d6573; --ok:#1e6b33; --okbg:#e5f3e9; --coral:#e8573c; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: -apple-system, "Segoe UI", "Open Sans", Arial, sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+  header { background:linear-gradient(135deg,var(--navy),var(--deep)); color:#fff; padding:2.2rem 0 2rem; }
+  .wrap { width:min(1120px, 100% - 2.5rem); margin:0 auto; }
+  h1 { font-family: Georgia, "Times New Roman", serif; font-size:2.3rem; margin:0 0 .3rem; }
+  header p { margin:.2rem 0; color:#cfe0f3; }
+  h2 { font-family: Georgia, "Times New Roman", serif; color:var(--deep); font-size:1.7rem; margin:0 0 .25rem; }
+  h3 { color:var(--navy); margin:1.6rem 0 .4rem; font-size:1.15rem; }
+  section.check { background:#fff; border:1px solid rgba(10,31,61,.12); border-radius:18px; padding:1.8rem; margin:2rem 0; box-shadow:0 8px 24px rgba(10,31,61,.06); }
+  .tag { display:inline-block; font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ok); background:var(--okbg); border-radius:999px; padding:.2rem .7rem; margin-left:.4rem; vertical-align:middle; }
+  .num { display:inline-grid; place-items:center; width:2rem; height:2rem; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; margin-right:.5rem; font-family:Georgia,serif; }
+  figure { margin:1rem 0 0; }
+  figure a { display:block; border-radius:12px; overflow:hidden; border:1px solid rgba(10,31,61,.15); box-shadow:0 6px 18px rgba(10,31,61,.1); }
+  figure img { display:block; width:100%; height:auto; }
+  figcaption { margin-top:.65rem; font-size:.97rem; }
+  figcaption b { color:var(--navy); }
+  .proves { background:var(--cream); border-left:4px solid var(--navy); padding:.7rem 1rem; border-radius:6px; margin-top:.8rem; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+  table { border-collapse:collapse; width:100%; margin-top:.8rem; font-size:.92rem; }
+  th, td { border:1px solid rgba(10,31,61,.15); padding:.45rem .6rem; text-align:left; }
+  th { background:var(--cream); }
+  td.ok { color:var(--ok); font-weight:700; }
+  .summary td:first-child { white-space:nowrap; }
+  .muted { color:var(--muted); font-size:.9rem; }
+  code { background:#eef2f7; padding:.05rem .35rem; border-radius:4px; font-size:.88em; }
+  header code { background:rgba(255,255,255,.16); color:#fff; }
+  footer { padding:2rem 0 3rem; color:var(--muted); font-size:.9rem; }
+  @media (max-width: 800px) { .grid2 { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Campus Customs: App Check</h1>
+    <p>HW4 · Problem 11 · Live site tested on 16 Oct 2026</p>
+    <p>React + Vite front end at <code>localhost:5174</code> · FastAPI + PydanticAI agent at <code>localhost:8000</code> (<code>gpt-5.6</code> via Portkey) · data from <code>data/campus_customs.db</code></p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="check">
+    <h2>Summary</h2>
+    <table class="summary">
+      <tr><th>#</th><th>Check</th><th>What was tested</th><th>Result</th></tr>
+      <tr><td>1</td><td>Chat checks an item's inventory</td><td>Price and stock per size in the chat answer vs. the product page vs. the database</td><td class="ok">PASS: all 7 numbers match</td></tr>
+      <tr><td>2</td><td>Dynamic search-result cards</td><td>"What hoodies do you have?" puts 27 product cards on the page, and a card opens its detail page</td><td class="ok">PASS</td></tr>
+      <tr><td>3</td><td>P9 usability features</td><td>(a) <code>find_alternatives</code> for a sold-out size, (b) shopping bag with stock limits, (c) instant header search</td><td class="ok">PASS</td></tr>
+    </table>
+    <p class="muted">Each screenshot was taken by an automated run of the real site in Google Chrome (Playwright, 1440×900 at 2×, signed out as a guest), with live agent answers. Click any screenshot to open it full size.</p>
+  </section>
+
+  <!-- ===================== CHECK 1 ===================== -->
+  <section class="check" id="check1">
+    <h2><span class="num">1</span>Chat checks the inventory level of an item <span class="tag">Pass</span></h2>
+    <p>On the <b>Football Left Chest T-Shirt</b> page, the shopper asked the chat: <i>"How much is this tee, and how many do you have in each size?"</i></p>
+
+    <div class="grid2">
+      <figure>
+        <a href="app_check_images/inventory.png" target="_blank"><img src="app_check_images/inventory.png" alt="Chat answer listing price and stock for each size of the Football Left Chest T-Shirt" /></a>
+        <figcaption><b>Chat answer.</b> The agent knew "this tee" from page context, called its stock and price tools, and answered <b>$32.00</b>: XS sold out, S 2 left, M sold out, L 2 left, XL sold out, XXL 5 in stock. It then offered two in-stock $32.00 alternatives. The green badge shows the price guardrail checked every price.</figcaption>
+      </figure>
+      <figure>
+        <a href="app_check_images/inventory_page.png" target="_blank"><img src="app_check_images/inventory_page.png" alt="Product page size grid for the Football Left Chest T-Shirt" /></a>
+        <figcaption><b>Same item, product page.</b> The size grid (read from the API, not the model) shows the same numbers: XS, M, XL sold out; S and L "Only 2 left"; XXL 5 in stock; 9 units in total; $32.00.</figcaption>
+      </figure>
+    </div>
+
+    <table>
+      <tr><th>Field</th><th>Chat answer</th><th>Product page</th><th>Database (<code>catalogue</code> / <code>inventory</code>)</th><th></th></tr>
+      <tr><td>Price</td><td>$32.00</td><td>$32.00</td><td>32.0</td><td class="ok">✓</td></tr>
+      <tr><td>XS</td><td>sold out</td><td>Sold out</td><td>0</td><td class="ok">✓</td></tr>
+      <tr><td>S</td><td>2 left</td><td>Only 2 left</td><td>2</td><td class="ok">✓</td></tr>
+      <tr><td>M</td><td>sold out</td><td>Sold out</td><td>0</td><td class="ok">✓</td></tr>
+      <tr><td>L</td><td>2 left</td><td>Only 2 left</td><td>2</td><td class="ok">✓</td></tr>
+      <tr><td>XL</td><td>sold out</td><td>Sold out</td><td>0</td><td class="ok">✓</td></tr>
+      <tr><td>XXL</td><td>5 in stock</td><td>5 in stock</td><td>5</td><td class="ok">✓</td></tr>
+    </table>
+    <p class="proves"><b>What this proves:</b> the chatbot gives honest, exact stock and price straight from the database. Every number matches the <code>inventory</code> and <code>catalogue</code> rows, and sold-out sizes are stated clearly.</p>
+  </section>
+
+  <!-- ===================== CHECK 2 ===================== -->
+  <section class="check" id="check2">
+    <h2><span class="num">2</span>Dynamic search-result cards after a category question <span class="tag">Pass</span></h2>
+    <p>Starting on the Home page, the shopper asked: <i>"What hoodies do you have?"</i></p>
+
+    <figure>
+      <a href="app_check_images/search_cards.png" target="_blank"><img src="app_check_images/search_cards.png" alt="Products page filled with hoodie cards from the chat search" /></a>
+      <figcaption><b>Cards appear on the page.</b> The agent searched the catalogue and returned structured matches (<code>page_results</code>). The site moved to Products and drew <b>27 hoodie cards</b> (image, name, hang-tag price, short description, sizes) under "From your chat with the Bulldog · Yale Hoodies · 27 matches". The chat reply links to them ("27 Yale Hoodies on the page →") and shows 3 top picks. The database has exactly 27 hoodies.</figcaption>
+    </figure>
+
+    <h3>Clicking a card the chat put on the page</h3>
+    <figure>
+      <a href="app_check_images/search_card_detail.png" target="_blank"><img src="app_check_images/search_card_detail.png" alt="Champion Full Zip Hood detail page opened from a chat result card" /></a>
+      <figcaption><b>Single-item page still works.</b> Clicking the <b>Champion Full Zip Hood</b> card from the chat results opened <code>/products/champion-full-zip-hood</code>: large image on the left, full info on the right (description, colors, $88.00, stock for every size).</figcaption>
+    </figure>
+    <p class="proves"><b>What this proves:</b> the agent → page contract works. A category question becomes structured product matches that the front end renders as clickable cards, and those cards lead to the same detail view as the regular catalogue.</p>
+  </section>
+
+  <!-- ===================== CHECK 3 ===================== -->
+  <section class="check" id="check3">
+    <h2><span class="num">3</span>Usability features added in Problem 9 <span class="tag">Pass</span></h2>
+
+    <h3>3a. <code>find_alternatives</code>: rescuing a sold-out size (agent improvement)</h3>
+    <p>The shopper asked: <i>"I need the Morse 1/4 Zip in a large. Do you have it?"</i> Large is sold out (L = 0 in the database).</p>
+    <figure>
+      <a href="app_check_images/usability_alternatives.png" target="_blank"><img src="app_check_images/usability_alternatives.png" alt="Chat answer saying size L is sold out and offering in-stock alternatives" /></a>
+      <figcaption>The Bulldog says plainly that <b>"Size L is sold out"</b>, lists the sizes that are in stock, and then uses the new tool to offer three quarter-zips that <b>are in stock in L</b>: Benjamin Franklin (20 in L), Berkeley (5), and Branford (15). Each comes with a reason and a clickable card. All counts match the database.</figcaption>
+    </figure>
+    <p class="proves"><b>What this proves:</b> a sold-out answer now ends with real, in-stock options instead of a dead end, which saves the sale with accurate data.</p>
+
+    <h3>3b. Shopping bag with live stock limits (front-end improvement)</h3>
+    <figure>
+      <a href="app_check_images/usability_bag.png" target="_blank"><img src="app_check_images/usability_bag.png" alt="Bag drawer with two Morse 1/4 Zip lines and the stock cap shown" /></a>
+      <figcaption>Morse 1/4 Zip size S was added three times, but only 2 are in stock. The third add was refused ("You already have all 2 in size S in your bag"), and the drawer shows <b>"max 2 in stock"</b> with + disabled. With one XL added, the subtotal is <b>$216.00</b> (3 × $72.00). The bag is saved on the device.</figcaption>
+    </figure>
+
+    <h3>3c. Instant header search (front-end improvement)</h3>
+    <figure>
+      <a href="app_check_images/usability_search.png" target="_blank"><img src="app_check_images/usability_search.png" alt="Header search dropdown showing Berkeley results with images and prices" /></a>
+      <figcaption>Typing <b>"berkeley"</b> in the header search on the Home page instantly shows both Berkeley items with thumbnails, stock status, and prices ($72.00, $98.00). Keyboard navigation highlights a result, and "See all 2 results" opens the filtered Products page.</figcaption>
+    </figure>
+    <p class="proves"><b>What this proves:</b> the P9 features are live in the running app. Shoppers can't over-order beyond real stock, and they can find products from any page in a couple of keystrokes.</p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  How this was run: both servers running locally (<code>uvicorn main:app --reload --port 8000</code> from <code>backend/</code>, and <code>npm run dev</code> in <code>frontend/</code>). A Playwright script drove Google Chrome through each check, waited for the live agent replies, and saved the PNGs in <code>output/app_check_images/</code>. Database values were read directly from <code>data/campus_customs.db</code> with SQLite.
+</footer>
+</body>
+</html>
